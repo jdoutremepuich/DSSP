@@ -12,9 +12,10 @@ class FeatureExtractor(object):
     def transform(self, X_df):
         X_encoded = X_df
         
-        #utilisation de la matrice des distances
-        distance=pd.read_csv("Distance.csv", sep = ';')
-        X_encoded = X_encoded.merge(distance, how='left', left_on=['Departure','Arrival'], right_on=['Departure','Arrival'], sort=False)
+        #uncomment the line below in the submission
+        path = os.path.dirname(__file__)
+        special_days=pd.read_csv(os.path.join(path, "data_specialdays.csv"), sep = ';')
+        X_encoded = X_encoded.merge(special_days, how='left', left_on=['DateOfDeparture'], right_on=['DateOfDeparture'], sort=False)
         
         #uncomment the line below in the submission
         #path = os.path.dirname(__file__)
