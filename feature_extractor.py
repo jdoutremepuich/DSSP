@@ -12,10 +12,14 @@ class FeatureExtractor(object):
     def transform(self, X_df):
         X_encoded = X_df
         
-        #uncomment the line below in the submission
-        path = os.path.dirname(__file__)
-        special_days=pd.read_csv(os.path.join(path,"data_specialdays.csv"), sep = ';')
+        #utilisation de la matrice des distances
+        distance=pd.read_csv("Distance.csv", sep = ';')
+        X_encoded = X_encoded.merge(distance, how='left', left_on=['Departure','Arrival'], right_on=['Departure','Arrival'], sort=False)
         
+        #uncomment the line below in the submission
+        #path = os.path.dirname(__file__)
+        #special_days=pd.read_csv(os.path.join(path, "data_specialdays.csv"), sep = ';')
+        special_days=pd.read_csv("data_specialdays.csv", sep = ';')
         X_encoded = X_encoded.merge(special_days, how='left', left_on=['DateOfDeparture'], right_on=['DateOfDeparture'], sort=False)
         X_encoded = X_encoded.join(pd.get_dummies(X_encoded['Departure'], prefix='d'))
         X_encoded = X_encoded.join(pd.get_dummies(X_encoded['Arrival'], prefix='a'))
@@ -29,6 +33,9 @@ class FeatureExtractor(object):
         X_encoded = X_encoded.join(pd.get_dummies(X_encoded['year'], prefix='y'))
         X_encoded = X_encoded.join(pd.get_dummies(X_encoded['weekday'], prefix='wd'))
         X_encoded = X_encoded.join(pd.get_dummies(X_encoded['week'], prefix='w'))
+        
+        
+                
         X_encoded = X_encoded.drop('weekday', axis=1)
         X_encoded = X_encoded.drop('week', axis=1)
         X_encoded = X_encoded.drop('year', axis=1)
